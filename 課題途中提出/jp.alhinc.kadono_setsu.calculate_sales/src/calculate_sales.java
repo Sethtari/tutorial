@@ -94,9 +94,9 @@ public class calculate_sales {
 			for (int i = 0; i < branchOneTime.size(); i++) {
 				String bot = branchOneTime.get(i);
 
-				String[] branchDateSplit = bot.split(",", 0);
+				String[] branchDateSplit = bot.split(",");
 
-				if (branchOneTime.size() % 2 == 0 && branchDateSplit[1].matches("^[^\n\r]+$")
+				if (branchDateSplit.length == 2 && branchOneTime.size() %2 == 0 && branchDateSplit[1].matches("^[^\n\r]+$")
 						&& branchDateSplit[0].matches("^[0-9]{3}$")) {
 					branchDateMap.put(branchDateSplit[0], branchDateSplit[1]);
 				} else {
@@ -133,8 +133,8 @@ public class calculate_sales {
 
 			for (int i = 0; i < commodityOneTime.size(); i++) {
 				String cot = commodityOneTime.get(i);
-				String[] commodityDateSplit = cot.split(",", 0);
-				if (commodityOneTime.size() % 2 == 0 && commodityDateSplit[1].matches("^[^\n\r]+$")
+				String[] commodityDateSplit = cot.split(",");
+				if (commodityDateSplit.length == 2 && commodityDateSplit[1].matches("^[^\n\r]+$")
 						&& commodityDateSplit[0].matches("^[0-9a-zA-Z]{8}")) {
 					commodityDateMap.put(commodityDateSplit[0], commodityDateSplit[1]);
 				} else {
@@ -173,7 +173,7 @@ public class calculate_sales {
 			// ここから連番チェック処理
 			for (int i = 0; i < salesName.size(); i++) {
 				String str = salesName.get(i);
-				String[] salesNameCheck = str.split("[.]", 0);
+				String[] salesNameCheck = str.split("[.]");
 				int salesNameNumber = Integer.parseInt(salesNameCheck[0]);
 
 				if (i + 1 != salesNameNumber) {
