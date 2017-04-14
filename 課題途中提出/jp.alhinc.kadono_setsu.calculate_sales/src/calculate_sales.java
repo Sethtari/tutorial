@@ -64,7 +64,13 @@ public class calculate_sales {
 
 			HashMap<String, String> branchDateMap = new HashMap<String, String>();
 			// 支店定義ファイルのマップ作成
+
+			HashMap<String, Long> branchSalesDateMap = new HashMap<String, Long>();
+			// 店売り上げのマップ作成
+			
 			ArrayList<String> branchOneTime = new ArrayList<String>();
+			//支店定義ファイル読み込み一時リスト作成
+			
 
 			// 支店定義ファイル読み込みスタート
 
@@ -99,6 +105,7 @@ public class calculate_sales {
 				if (branchDateSplit.length == 2 && branchOneTime.size() %2 == 0 && branchDateSplit[1].matches("^[^\n\r]+$")
 						&& branchDateSplit[0].matches("^[0-9]{3}$")) {
 					branchDateMap.put(branchDateSplit[0], branchDateSplit[1]);
+					branchSalesDateMap.put(branchDateSplit[0], 0l);
 				} else {
 					System.out.println("支店定義ファイルのフォーマットが不正です");
 					System.exit(1);
@@ -109,8 +116,14 @@ public class calculate_sales {
 
 			HashMap<String, String> commodityDateMap = new HashMap<String, String>();
 			// 商品定義マップ作成
-			ArrayList<String> commodityOneTime = new ArrayList<String>();
 
+			HashMap<String, Long> commoditySalesDateMap = new HashMap<String, Long>();
+			// 商品売り上げのマップ作成
+
+			ArrayList<String> commodityOneTime = new ArrayList<String>();
+			//商品定義ファイル一時保存リスト作成
+			
+			
 			// 商品定義ファイル読み込みスタート
 			try {
 
@@ -137,6 +150,7 @@ public class calculate_sales {
 				if (commodityDateSplit.length == 2 && commodityDateSplit[1].matches("^[^\n\r]+$")
 						&& commodityDateSplit[0].matches("^[0-9a-zA-Z]{8}")) {
 					commodityDateMap.put(commodityDateSplit[0], commodityDateSplit[1]);
+					commoditySalesDateMap.put(commodityDateSplit[0],0l);
 				} else {
 					System.out.println("商品定義ファイルのフォーマットが不正です");
 					System.exit(1);
@@ -145,11 +159,6 @@ public class calculate_sales {
 
 			// 商品定義ファイル処理終了
 
-			HashMap<String, Long> branchSalesDateMap = new HashMap<String, Long>();
-			// 店売り上げのマップ作成
-
-			HashMap<String, Long> commoditySalesDateMap = new HashMap<String, Long>();
-			// 商品売り上げのマップ作成
 
 			ArrayList<String> salesName = new ArrayList<String>();
 
@@ -209,9 +218,6 @@ public class calculate_sales {
 						System.out.println(salesName.get(i) + "の支店コードが不正です");
 						br.close();
 						System.exit(1);
-					} else if (branchSalesDateMap.get(branchNumber) == null) {
-						branchSalesDateMap.put(branchNumber, Long.parseLong(salesOneTime.get(2)));
-
 					} else {
 						// 支店データが存在する場合、合計して代入
 						long sumOfBranchSales = branchSalesDateMap.get(branchNumber)
@@ -233,10 +239,6 @@ public class calculate_sales {
 						// 商品コードがリストになければエラー
 						System.out.println(salesName.get(i) + "の商品コードが不正です");
 						System.exit(1);
-					} else if (commoditySalesDateMap.get(commodityNumber) == null) {
-
-						// 先にデータがなければそのまま代入
-						commoditySalesDateMap.put(commodityNumber, Long.parseLong(salesOneTime.get(2)));
 					} else {
 
 						// 商品データが存在する場合、合計して代入
