@@ -67,19 +67,17 @@ public class calculate_sales {
 
 			HashMap<String, Long> branchSalesDateMap = new HashMap<String, Long>();
 			// 店売り上げのマップ作成
-			
+
 			ArrayList<String> branchOneTime = new ArrayList<String>();
-			//支店定義ファイル読み込み一時リスト作成
-			
+			// 支店定義ファイル読み込み一時リスト作成
 
 			// 支店定義ファイル読み込みスタート
 
-/*			
-			//この辺をメソッド処理入力欄に
-			 String fileType = "branch";
-			 ReadFile branch = new ReadFile();
-*/
-			
+			/*
+			 * //この辺をメソッド処理入力欄に String fileType = "branch"; ReadFile branch =
+			 * new ReadFile();
+			 */
+
 			try {
 				File file = new File(args[0], "branch.lst");
 				fr = new FileReader(file);
@@ -102,7 +100,7 @@ public class calculate_sales {
 
 				String[] branchDateSplit = bot.split(",");
 
-				if (branchDateSplit.length == 2 && branchOneTime.size() %2 == 0 && branchDateSplit[1].matches("^[^\n\r]+$")
+				if (branchDateSplit.length == 2 && branchDateSplit[1].matches("^[^\n\r]+$")
 						&& branchDateSplit[0].matches("^[0-9]{3}$")) {
 					branchDateMap.put(branchDateSplit[0], branchDateSplit[1]);
 					branchSalesDateMap.put(branchDateSplit[0], 0l);
@@ -121,9 +119,8 @@ public class calculate_sales {
 			// 商品売り上げのマップ作成
 
 			ArrayList<String> commodityOneTime = new ArrayList<String>();
-			//商品定義ファイル一時保存リスト作成
-			
-			
+			// 商品定義ファイル一時保存リスト作成
+
 			// 商品定義ファイル読み込みスタート
 			try {
 
@@ -150,7 +147,7 @@ public class calculate_sales {
 				if (commodityDateSplit.length == 2 && commodityDateSplit[1].matches("^[^\n\r]+$")
 						&& commodityDateSplit[0].matches("^[0-9a-zA-Z]{8}")) {
 					commodityDateMap.put(commodityDateSplit[0], commodityDateSplit[1]);
-					commoditySalesDateMap.put(commodityDateSplit[0],0l);
+					commoditySalesDateMap.put(commodityDateSplit[0], 0l);
 				} else {
 					System.out.println("商品定義ファイルのフォーマットが不正です");
 					System.exit(1);
@@ -158,7 +155,6 @@ public class calculate_sales {
 			}
 
 			// 商品定義ファイル処理終了
-
 
 			ArrayList<String> salesName = new ArrayList<String>();
 
@@ -168,7 +164,7 @@ public class calculate_sales {
 			for (int i = 0; i < files.length; i++) {
 				File file = files[i];
 				String fileName = file.getName().toString();
-				//↓ここにfile.isFileの条件を入れるとフォルダを除ける
+				// ↓ここにfile.isFileの条件を入れるとフォルダを除ける
 				if (file.isFile() && fileName.matches("^[0-9]{8}.rcd$")) {
 
 					// 検索ヒットしたファイルの格納
