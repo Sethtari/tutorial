@@ -160,7 +160,7 @@ public class calculate_sales {
 				File file = files[i];
 				String fileName = file.getName().toString();
 				//↓ここにfile.isFileの条件を入れるとフォルダを除ける
-				if (fileName.matches("^[0-9]{8}.rcd$")) {
+				if (file.isFile() && fileName.matches("^[0-9]{8}.rcd$")) {
 
 					// 検索ヒットしたファイルの格納
 					salesName.add(fileName);
