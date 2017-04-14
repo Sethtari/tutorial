@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,11 +12,53 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+/*
+ 
+ メソッド処理の途中
+class ReadFile {
+
+static String dateSpace; // ディレクトリ
+BufferedReader br = null;
+FileReader fr = null;
+String fileType; // branchかcommodityか
+String ArrayName = (fileType + "oneTime"); // ArrayList作成の際の名前
+String fileType1 = "支店";
+String fileType2 = "商品";
+
+	String ReadFile(String fileType) {
+
+		ArrayList<String> ArrayName = new ArrayList<String>();
+		return try {
+			File file = new File(dateSpace, fileType + ".lst");
+			fr = new FileReader(file);
+			br = new BufferedReader(fr);
+
+			String s;
+			while ((s = br.readLine()) != null) {
+				ArrayName.add(s);
+			}
+			br.close();
+		} catch (IOException e) {
+			if (fileType == "branch") {
+				System.out.println(fileType1 + "定義ファイルが存在しません");
+		} else if (fileType == "commodity") {
+			System.out.println(fileType2 + "定義ファイルが存在しません");
+		} else {
+
+		}
+			System.exit(1);
+		} finally {
+
+		};
+	}
+
+} */
 
 public class calculate_sales {
 	public static void main(String[] args) {
 
 		try {
+			// String dateSpace = args[0];
 			BufferedReader br = null;
 			FileReader fr = null;
 
@@ -25,8 +68,14 @@ public class calculate_sales {
 
 			// 支店定義ファイル読み込みスタート
 
+/*			
+			//この辺をメソッド処理入力欄に
+			 String fileType = "branch";
+			 ReadFile branch = new ReadFile();
+*/
+			
 			try {
-				File file = new File(args[0], "\\branch.lst");
+				File file = new File(args[0], "branch.lst");
 				fr = new FileReader(file);
 				br = new BufferedReader(fr);
 
@@ -65,7 +114,7 @@ public class calculate_sales {
 			// 商品定義ファイル読み込みスタート
 			try {
 
-				File file = new File(args[0], "\\commodity.lst");
+				File file = new File(args[0], "commodity.lst");
 				fr = new FileReader(file);
 				br = new BufferedReader(fr);
 
@@ -110,7 +159,8 @@ public class calculate_sales {
 			for (int i = 0; i < files.length; i++) {
 				File file = files[i];
 				String fileName = file.getName().toString();
-				if (fileName.matches("^[0-9]{8}.rcd")) {
+				//↓ここにfile.isFileの条件を入れるとフォルダを除ける
+				if (fileName.matches("^[0-9]{8}.rcd$")) {
 
 					// 検索ヒットしたファイルの格納
 					salesName.add(fileName);
@@ -136,7 +186,7 @@ public class calculate_sales {
 
 			// ここからRCDファイル読み込み処理
 			for (int i = 0; i < salesName.size(); i++) {
-				ArrayList<String> salesFileOneTime = new ArrayList<String>();
+				ArrayList<String> salesOneTime = new ArrayList<String>();
 
 				File file = new File(args[0], salesName.get(i));
 				fr = new FileReader(file);
@@ -144,31 +194,31 @@ public class calculate_sales {
 
 				String s;
 				while ((s = br.readLine()) != null) {
-					salesFileOneTime.add(s);
+					salesOneTime.add(s);
 				}
 				br.close();
 
-				if (salesFileOneTime.size() == 3 && (salesFileOneTime.get(0)).matches("^[0-9]{3}$")
-						&& (salesFileOneTime.get(1)).matches("^[0-9a-zA-Z]{8}$")
-						&& Long.parseLong(salesFileOneTime.get(2)) <= 10000000000l) {
+				if (salesOneTime.size() == 3 && (salesOneTime.get(0)).matches("^[0-9]{3}$")
+						&& (salesOneTime.get(1)).matches("^[0-9a-zA-Z]{8}$")
+						&& Long.parseLong(salesOneTime.get(2)) <= 10000000000l) {
 
 					// ここから読み込んだデータの格納処理。まずは支店データ
-					String branchNumber = salesFileOneTime.get(0);
+					String branchNumber = salesOneTime.get(0);
 					if (branchDateMap.get(branchNumber) == null) {
 						// 支店コードがリストになければエラー
 						System.out.println(salesName.get(i) + "の支店コードが不正です");
 						br.close();
 						System.exit(1);
 					} else if (branchSalesDateMap.get(branchNumber) == null) {
-						branchSalesDateMap.put(branchNumber, Long.parseLong(salesFileOneTime.get(2)));
+						branchSalesDateMap.put(branchNumber, Long.parseLong(salesOneTime.get(2)));
 
 					} else {
 						// 支店データが存在する場合、合計して代入
 						long sumOfBranchSales = branchSalesDateMap.get(branchNumber)
-								+ Long.parseLong(salesFileOneTime.get(2));
+								+ Long.parseLong(salesOneTime.get(2));
 
 						// 合計金額が10桁を超えたらエラー
-						if (sumOfBranchSales >= 1000000000) {
+						if (sumOfBranchSales >= 10000000000l) {
 							System.out.println("合計金額が10桁を超えました");
 							System.exit(1);
 						}
@@ -178,7 +228,7 @@ public class calculate_sales {
 					}
 
 					// ここから商品データと売り上げの格納
-					String commodityNumber = salesFileOneTime.get(1);
+					String commodityNumber = salesOneTime.get(1);
 					if (commodityDateMap.get(commodityNumber) == null) {
 						// 商品コードがリストになければエラー
 						System.out.println(salesName.get(i) + "の商品コードが不正です");
@@ -186,12 +236,12 @@ public class calculate_sales {
 					} else if (commoditySalesDateMap.get(commodityNumber) == null) {
 
 						// 先にデータがなければそのまま代入
-						commoditySalesDateMap.put(commodityNumber, Long.parseLong(salesFileOneTime.get(2)));
+						commoditySalesDateMap.put(commodityNumber, Long.parseLong(salesOneTime.get(2)));
 					} else {
 
 						// 商品データが存在する場合、合計して代入
 						long sumOFcommoditySales = commoditySalesDateMap.get(commodityNumber)
-								+ Long.parseLong(salesFileOneTime.get(2));
+								+ Long.parseLong(salesOneTime.get(2));
 
 						// 合計金額が10桁を超えたらエラー
 						if (sumOFcommoditySales >= 10000000000l) {
@@ -246,8 +296,9 @@ public class calculate_sales {
 				}
 
 				bw.close();
-			} catch (IOException e) {
-				System.out.println(e);
+			} catch (FileNotFoundException e) {
+				System.out.println("予期せぬエラーが発生しました");
+				System.exit(1);
 			}
 			// ここまで支店別集計ファイル出力処理
 
@@ -263,8 +314,9 @@ public class calculate_sales {
 				}
 
 				bw.close();
-			} catch (IOException e) {
-				System.out.println(e);
+			} catch (FileNotFoundException e) {
+				System.out.println("予期せぬエラーが発生しました");
+				System.exit(1);
 			}
 			// ここまで支店別集計ファイル出力処理
 
