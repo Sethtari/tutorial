@@ -84,7 +84,7 @@ public class test {
 
 			if (i + 1 != salesNameNumber) {
 				System.out.println("売り上げファイル名が連番になっていません");
-				System.exit(1);
+				return;
 			}
 		}
 
@@ -134,7 +134,7 @@ public class test {
 					// 合計金額が10桁を超えたらエラー
 					if (sumOfBranchSales >= 10000000000l) {
 						System.out.println("合計金額が10桁を超えました");
-						System.exit(1);
+						return;
 					}
 
 					// 10桁未満なら格納
@@ -146,7 +146,7 @@ public class test {
 				if (commodityDateMap.get(commodityNumber) == null) {
 					// 商品コードがリストになければエラー
 					System.out.println(salesName.get(i) + "の商品コードが不正です");
-					System.exit(1);
+					return;
 				} else {
 
 					// 商品データが存在する場合、合計して代入
@@ -156,7 +156,7 @@ public class test {
 					// 合計金額が10桁を超えたらエラー
 					if (sumOFcommoditySales >= 10000000000l) {
 						System.out.println("合計金額が10桁を超えました");
-						System.exit(1);
+						return;
 					}
 
 					// 10桁未満なら格納
