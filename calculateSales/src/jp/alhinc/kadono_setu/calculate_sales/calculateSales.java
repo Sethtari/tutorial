@@ -111,18 +111,17 @@ public class calculateSales {
 				try {
 					br.close();
 				} catch (IOException e) {
-					// TODO 自動生成された catch ブロック
-					e.printStackTrace();
+
 				}
 			}
 			if(!salesOneTime.get(2).matches("^[0-9]$")){
-				System.out.println(salesName.get(i) + "のフォーマットが不正です");
+				System.out.println("予期せぬエラーが発生しました");
 				return;
 			}
 			
 			if (salesOneTime.size() == 3 && (salesOneTime.get(0)).matches("^[0-9]{3}$")
 					&& (salesOneTime.get(1)).matches("^[0-9a-zA-Z]{8}$")
-					&& Long.parseLong(salesOneTime.get(2)) <= 10000000000l) {
+					&& Long.parseLong(salesOneTime.get(2)) <= 10000000000L) {
 
 				// ここから読み込んだデータの格納処理。まずは支店データ
 				String branchNumber = salesOneTime.get(0);
@@ -137,7 +136,7 @@ public class calculateSales {
 							+ Long.parseLong(salesOneTime.get(2));
 
 					// 合計金額が10桁を超えたらエラー
-					if (sumOfBranchSales >= 10000000000l) {
+					if (sumOfBranchSales >= 10000000000L) {
 						System.out.println("合計金額が10桁を超えました");
 						return;
 					}
@@ -159,7 +158,7 @@ public class calculateSales {
 							+ Long.parseLong(salesOneTime.get(2));
 
 					// 合計金額が10桁を超えたらエラー
-					if (sumOFcommoditySales >= 10000000000l) {
+					if (sumOFcommoditySales >= 10000000000L) {
 						System.out.println("合計金額が10桁を超えました");
 						return;
 					}
