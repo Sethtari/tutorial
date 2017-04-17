@@ -34,7 +34,7 @@ public class CalculateSales {
 
 
 		// 支店定義ファイル読み込みスタート
-		if(!fileRead(args[0],"branch","支店",branchDateMap,branchSalesDateMap,"^[0-9]{3}$")){
+		if(!fileRead(args[0],"branch.lst","支店",branchDateMap,branchSalesDateMap,"^[0-9]{3}$")){
 			return;
 		}
 		// 支店定義ファイル読み込み終了
@@ -49,7 +49,7 @@ public class CalculateSales {
 
 
 		// 商品定義ファイル読み込みスタート
-		if(!fileRead(args[0],"commodity","商品",commodityDateMap,commoditySalesDateMap,"^[0-9a-zA-Z]{8}")){
+		if(!fileRead(args[0],"commodity.lst","商品",commodityDateMap,commoditySalesDateMap,"^[0-9a-zA-Z]{8}")){
 			return;
 		}
 		// 商品定義ファイル処理終了
@@ -199,7 +199,7 @@ public class CalculateSales {
 
 		// 定義ファイル読み込みスタート
 		BufferedReader br = null;
-		File file = new File(dirPath, fileName + ".lst");
+		File file = new File(dirPath, fileName);
 		if(file.exists() == false){
 			System.out.println(fileType +"定義ファイルが存在しません");
 			return false;
