@@ -112,7 +112,7 @@ public class calculateSales {
 				}
 			}
 			if(salesOneTime.size() != 3 ){
-				System.out.println(salesName.get(i) + "定義ファイルのフォーマットが不正です");
+				System.out.println(salesName.get(i) + "のフォーマットが不正です");
 				return;
 			}else{
 				if(!salesOneTime.get(2).matches("^[0-9]*$")){
