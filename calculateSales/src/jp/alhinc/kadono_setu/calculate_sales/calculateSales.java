@@ -115,7 +115,7 @@ public class calculateSales {
 					e.printStackTrace();
 				}
 			}
-			if(salesOneTime.get(2).matches("^[0-9]$")){
+			if(!salesOneTime.get(2).matches("^[0-9]$")){
 				System.out.println(salesName.get(i) + "のフォーマットが不正です");
 				return;
 			}
