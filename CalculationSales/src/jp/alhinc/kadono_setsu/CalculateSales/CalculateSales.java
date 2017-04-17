@@ -66,13 +66,14 @@ public class CalculateSales {
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
 			String fileName = file.getName().toString();
-			if (file.isFile() && fileName.matches("^[0-9]{8}.rcd$")) {
+			String[] dateSplit = fileName.split(".");
+			if (file.isFile() && dateSplit[0].matches("^[0-9]{8}*$")) {
 
 				// 検索ヒットしたファイルの格納
 				salesName.add(fileName);
-				if(Integer.parseInt(fileName) > maxCheck){
+				if(Integer.parseInt(dateSplit[1]) > maxCheck){
 					maxCheck = Integer.parseInt(fileName);
-				}else if(Integer.parseInt(fileName)<lowCheck){
+				}else if(Integer.parseInt(dateSplit[0])<lowCheck){
 					lowCheck = Integer.parseInt(fileName);
 				}}
 		}
@@ -210,10 +211,10 @@ public class CalculateSales {
 
 				String s = null;
 				while((s = br.readLine()) != null){
-					String[] DateSplit = s.split(",");
-					if (DateSplit.length == 2 && DateSplit[0].matches(nameLimit)) {
-						nameMap.put(DateSplit[0], DateSplit[1]);
-						salesMap.put(DateSplit[0], 0l);
+					String[] dateSplit = s.split(",");
+					if (dateSplit.length == 2 && dateSplit[0].matches(nameLimit)) {
+						nameMap.put(dateSplit[0], dateSplit[1]);
+						salesMap.put(dateSplit[0], 0l);
 					} else {
 						System.out.println(fileType + "定義ファイルのフォーマットが不正です");
 						return false;
