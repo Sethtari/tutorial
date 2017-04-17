@@ -32,11 +32,10 @@ public class calculateSales {
 		HashMap<String, Long> branchSalesDateMap = new HashMap<String, Long>();
 		// 店売り上げのマップ作成
 		// ReadFile(branch);
-		ArrayList<String> branchOneTime = new ArrayList<String>();
-		// 支店定義ファイル読み込み一時リスト作成
+
 
 		// 支店定義ファイル読み込みスタート
-		if(!fileRead(args[0],"branch","支店",branchOneTime,branchDateMap,branchSalesDateMap,"^[0-9]{3}$")){
+		if(!fileRead(args[0],"branch","支店",branchDateMap,branchSalesDateMap,"^[0-9]{3}$")){
 			return;
 		}
 		// 支店定義ファイル読み込み終了
@@ -49,11 +48,9 @@ public class calculateSales {
 		HashMap<String, Long> commoditySalesDateMap = new HashMap<String, Long>();
 		// 商品売り上げのマップ作成
 
-		ArrayList<String> commodityOneTime = new ArrayList<String>();
-		// 商品定義ファイル一時保存リスト作成
 
 		// 商品定義ファイル読み込みスタート
-		if(!fileRead(args[0],"commodity","商品",commodityOneTime,commodityDateMap,commoditySalesDateMap,"^[0-9a-zA-Z]{8}")){
+		if(!fileRead(args[0],"commodity","商品",commodityDateMap,commoditySalesDateMap,"^[0-9a-zA-Z]{8}")){
 			return;
 		}
 		// 商品定義ファイル処理終了
@@ -118,7 +115,7 @@ public class calculateSales {
 				System.out.println("予期せぬエラーが発生しました");
 				return;
 			}
-			
+
 			if (salesOneTime.size() == 3 && (salesOneTime.get(0)).matches("^[0-9]{3}$")
 					&& (salesOneTime.get(1)).matches("^[0-9a-zA-Z]{8}$")
 					&& Long.parseLong(salesOneTime.get(2)) <= 10000000000L) {
@@ -191,7 +188,7 @@ public class calculateSales {
 	}
 
 
-	public static boolean fileRead(String dirPath,String fileName, String fileType,ArrayList<String> oneTime,
+	public static boolean fileRead(String dirPath,String fileName, String fileType,
 			HashMap<String,String> nameMap,HashMap<String,Long> salesMap,String nameLimit){
 
 		// 定義ファイル読み込みスタート
@@ -206,33 +203,25 @@ public class calculateSales {
 				FileReader fr = new FileReader(file);
 				br = new BufferedReader(fr);
 
-				String s;
-				while ((s = br.readLine()) != null) {
-					oneTime.add(s);
+				String s = null;
+				while((s = br.readLine()) != null){
+					String[] DateSplit = s.split(",");
+					if (DateSplit.length == 2 && DateSplit[0].matches(nameLimit)) {
+						nameMap.put(DateSplit[0], DateSplit[1]);
+						salesMap.put(DateSplit[0], 0l);
+					} else {
+						System.out.println(fileType + "定義ファイルのフォーマットが不正です");
+						return false;
+					}
 				}
-			} catch (IOException e) {
-				return false;
-			} finally {
-				try {
-					br.close();
-				} catch (IOException e) {
-
+				return true;
+			}catch(IOException e){
+				}finally{
+					try {
+						br.close();
+					} catch (IOException e) {
+					}
 				}
-			}
-
-			// 格納後の定義ファイルをマップへ
-			for (int i = 0; i < oneTime.size(); i++) {
-				String bot = oneTime.get(i);
-
-				String[] DateSplit = bot.split(",");
-				if (DateSplit.length == 2 && DateSplit[0].matches(nameLimit)) {
-					nameMap.put(DateSplit[0], DateSplit[1]);
-					salesMap.put(DateSplit[0], 0l);
-				} else {
-					System.out.println(fileType + "定義ファイルのフォーマットが不正です");
-					return false;
-				}
-			}
 		}
 
 		// 定義ファイル読み込み終了
