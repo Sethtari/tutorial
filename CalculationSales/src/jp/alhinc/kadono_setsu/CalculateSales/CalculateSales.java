@@ -86,17 +86,6 @@ public class CalculateSales {
 			return;
 		}
 
-		/*			
-			for (int i = 0; i < salesName.size(); i++) {
-				String str = salesName.get(i);
-				String[] salesNameCheck = str.split("[.]");
-				int salesNameNumber = Integer.parseInt(salesNameCheck[0]);
-
-				if (i + 1 != salesNameNumber) {
-
-					return;
-				}
-			}*/
 
 		// ここまで連番チェック処理
 
