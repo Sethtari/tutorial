@@ -114,7 +114,7 @@ public class calculateSales {
 
 				}
 			}
-			if(!salesOneTime.get(2).matches("^[0-9]$")){
+			if(!salesOneTime.get(2).matches("^[0-9]*$")){
 				System.out.println("予期せぬエラーが発生しました");
 				return;
 			}
