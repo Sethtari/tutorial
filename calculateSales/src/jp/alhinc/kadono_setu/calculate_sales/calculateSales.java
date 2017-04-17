@@ -84,7 +84,7 @@ public class calculateSales {
 			int salesNameNumber = Integer.parseInt(salesNameCheck[0]);
 
 			if (i + 1 != salesNameNumber) {
-				System.out.println("売り上げファイル名が連番になっていません");
+				System.out.println("売上ファイル名が連番になっていません");
 				return;
 			}
 		}
@@ -115,7 +115,11 @@ public class calculateSales {
 					e.printStackTrace();
 				}
 			}
-
+			if(salesOneTime.get(2).matches("^[0-9]$")){
+				System.out.println(salesName.get(i) + "のフォーマットが不正です");
+				return;
+			}
+			
 			if (salesOneTime.size() == 3 && (salesOneTime.get(0)).matches("^[0-9]{3}$")
 					&& (salesOneTime.get(1)).matches("^[0-9a-zA-Z]{8}$")
 					&& Long.parseLong(salesOneTime.get(2)) <= 10000000000l) {
