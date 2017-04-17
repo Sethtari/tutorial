@@ -19,6 +19,10 @@ public class test {
 
 	public static void main(String[] args) {
 
+		if(args.length != 1){
+			System.out.println("予期せぬエラーが発生しました");
+			return;
+		}
 		BufferedReader br = null;
 		FileReader fr = null;
 
@@ -32,8 +36,7 @@ public class test {
 		// 支店定義ファイル読み込み一時リスト作成
 
 		// 支店定義ファイル読み込みスタート
-		if(fileRead(args[0],"branch","支店",branchOneTime,branchDateMap,branchSalesDateMap,"^[0-9]{3}$")){
-		}else{
+		if(!fileRead(args[0],"branch","支店",branchOneTime,branchDateMap,branchSalesDateMap,"^[0-9]{3}$")){
 			return;
 		}
 		// 支店定義ファイル読み込み終了
@@ -50,8 +53,7 @@ public class test {
 		// 商品定義ファイル一時保存リスト作成
 
 		// 商品定義ファイル読み込みスタート
-		if(fileRead(args[0],"commodity","商品",commodityOneTime,commodityDateMap,commoditySalesDateMap,"^[0-9a-zA-Z]{8}")){
-		}else{
+		if(!fileRead(args[0],"commodity","商品",commodityOneTime,commodityDateMap,commoditySalesDateMap,"^[0-9a-zA-Z]{8}")){
 			return;
 		}
 		// 商品定義ファイル処理終了
@@ -70,7 +72,6 @@ public class test {
 
 				// 検索ヒットしたファイルの格納
 				salesName.add(fileName);
-			} else {
 			}
 		}
 
@@ -173,15 +174,13 @@ public class test {
 			// ここまでRCDファイル読み込み処理
 
 			// 支店出力処理
-			if (fileWright(args[0], "branch", branchDateMap, branchSalesDateMap)) {
-			} else {
+			if (!fileWright(args[0], "branch", branchDateMap, branchSalesDateMap)) {
 				System.out.println("予期せぬエラーが発生しました");
 				return;
 			}
 
 			// 商品出力処理
-			if (fileWright(args[0], "commodity", commodityDateMap, commoditySalesDateMap)) {
-			} else {
+			if (!fileWright(args[0], "commodity", commodityDateMap, commoditySalesDateMap)) {
 				System.out.println("予期せぬエラーが発生しました");
 				return;
 			}
