@@ -1,4 +1,4 @@
-package jp.alhinc.kadono_setsu.CalculateSales;
+package jp.alhinc.kadono_setsu.calculate_sales;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -60,33 +60,30 @@ public class CalculateSales {
 		// ここからrcdかつ八桁名のファイル検索
 		File dir = new File(args[0]);
 		File[] files = dir.listFiles();
-		int maxCheck = 0;
-		int lowCheck = files.length;
 
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
 			String fileName = file.getName().toString();
-			String[] dateSplit = fileName.split(".");
-			if (file.isFile() && dateSplit[0].matches("^[0-9]{8}*$")) {
+			if (file.isFile() && fileName.matches("^[0-9]{8}.rcd$")) {
 
 				// 検索ヒットしたファイルの格納
 				salesName.add(fileName);
-				if(Integer.parseInt(dateSplit[1]) > maxCheck){
-					maxCheck = Integer.parseInt(fileName);
-				}else if(Integer.parseInt(dateSplit[0])<lowCheck){
-					lowCheck = Integer.parseInt(fileName);
-				}}
+				}
 		}
 
 		// ここまでファイル検索処理
 
 		// ここから連番チェック処理
+		for (int i = 0; i < salesName.size(); i++) {
+			String str = salesName.get(i);
+			String[] salesNameCheck = str.split("[.]");
+			int salesNameNumber = Integer.parseInt(salesNameCheck[0]);
 
-		if(salesName.size() != maxCheck - lowCheck + 1){
-			System.out.println("売上ファイル名が連番になっていません");
-			return;
+			if (i + 1 != salesNameNumber) {
+				System.out.println("売上ファイル名が連番になっていません");
+				return;
+			}
 		}
-
 
 		// ここまで連番チェック処理
 
