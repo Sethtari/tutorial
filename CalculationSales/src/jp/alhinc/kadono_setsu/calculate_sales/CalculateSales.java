@@ -25,35 +25,31 @@ public class CalculateSales {
 		BufferedReader br = null;
 		FileReader fr = null;
 
-		HashMap<String, String> branchDateMap = new HashMap<String, String>();
 		// 支店定義ファイルのマップ作成
+		HashMap<String, String> branchNameMap = new HashMap<String, String>();
 
-		HashMap<String, Long> branchSalesDateMap = new HashMap<String, Long>();
 		// 店売り上げのマップ作成
-		// ReadFile(branch);
+		HashMap<String, Long> branchSalesMap = new HashMap<String, Long>();
 
 
-		// 支店定義ファイル読み込みスタート
-		if(!fileRead(args[0],"branch.lst","支店",branchDateMap,branchSalesDateMap,"^[0-9]{3}$")){
+
+		// ファイル読み込み処理
+		if(!fileRead(args[0],"branch.lst","支店",branchNameMap,branchSalesMap,"^[0-9]{3}$")){
 			return;
 		}
-		// 支店定義ファイル読み込み終了
 
-
-
-		HashMap<String, String> commodityDateMap = new HashMap<String, String>();
 		// 商品定義マップ作成
+		HashMap<String, String> commodityNameMap = new HashMap<String, String>();
 
-		HashMap<String, Long> commoditySalesDateMap = new HashMap<String, Long>();
 		// 商品売り上げのマップ作成
+		HashMap<String, Long> commoditySalesMap = new HashMap<String, Long>();
 
 
-		// 商品定義ファイル読み込みスタート
-		if(!fileRead(args[0],"commodity.lst","商品",commodityDateMap,commoditySalesDateMap,"^[0-9a-zA-Z]{8}")){
+
+		// ファイル読み込み処理
+		if(!fileRead(args[0],"commodity.lst","商品",commodityNameMap,commoditySalesMap,"^[0-9a-zA-Z]{8}")){
 			return;
 		}
-		// 商品定義ファイル処理終了
-
 
 		ArrayList<String> salesName = new ArrayList<String>();
 
@@ -63,18 +59,20 @@ public class CalculateSales {
 
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
-			String fileName = file.getName().toString();
+			String fileName = file.getName();
 			if (file.isFile() && fileName.matches("^[0-9]{8}.rcd$")) {
 
 				// 検索ヒットしたファイルの格納
 				salesName.add(fileName);
+				
 			}
 		}
 
 		// ここまでファイル検索処理
 
 		// ここから連番チェック処理
-
+		
+		
 		for (int i = 0; i < salesName.size(); i++) {
 			String str = salesName.get(i);
 			String[] salesNameCheck = str.split("[.]");
@@ -87,7 +85,7 @@ public class CalculateSales {
 		}
 		// ここまで連番チェック処理
 
-		// ここからRCDファイル読み込み処理
+		// ここからrcdファイル読み込み処理
 		for (int i = 0; i < salesName.size(); i++) {
 			ArrayList<String> salesOneTime = new ArrayList<String>();
 
@@ -116,11 +114,6 @@ public class CalculateSales {
 				return;
 			}
 			
-			if(!(salesOneTime.get(0)).matches("^[0-9]{3}$")
-					&& !(salesOneTime.get(1)).matches("^[0-9a-zA-Z]{8}$")){
-				System.out.println(salesName.get(i) + "のフォーマットが不正です");
-				return;
-			}
 
 			if(!salesOneTime.get(2).matches("^[0-9]*$")){
 				System.out.println("予期せぬエラーが発生しました");
@@ -136,14 +129,14 @@ public class CalculateSales {
 
 			// ここから読み込んだデータの格納処理。まずは支店データ
 			String branchNumber = salesOneTime.get(0);
-			if (branchDateMap.get(branchNumber) == null) {
+			if (!(branchSalesMap.containsKey(salesOneTime.get(0)))) {
 				// 支店コードがリストになければエラー
 				System.out.println(salesName.get(i) + "の支店コードが不正です");
 				return;
 			}
 
 			// 支店データが存在する場合、合計して代入
-			long sumOfBranchSales = branchSalesDateMap.get(branchNumber)
+			long sumOfBranchSales = branchSalesMap.get(branchNumber)
 					+ salesFileMoney;
 
 			// 合計金額が10桁を超えたらエラー
@@ -153,18 +146,18 @@ public class CalculateSales {
 			}
 
 			// 10桁未満なら格納
-			branchSalesDateMap.put(branchNumber, sumOfBranchSales);
+			branchSalesMap.put(branchNumber, sumOfBranchSales);
 
 
 			// ここから商品データと売り上げの格納
 			String commodityNumber = salesOneTime.get(1);
-			if (commodityDateMap.get(commodityNumber) == null) {
+			if (!commoditySalesMap.containsKey(salesOneTime.get(1))) {
 				// 商品コードがリストになければエラー
 				System.out.println(salesName.get(i) + "の商品コードが不正です");
 				return;
 			}
 			// 商品データが存在する場合、合計して代入
-			long sumOFcommoditySales = commoditySalesDateMap.get(commodityNumber)
+			long sumOFcommoditySales = commoditySalesMap.get(commodityNumber)
 					+ salesFileMoney;
 
 			// 合計金額が10桁を超えたらエラー
@@ -174,20 +167,20 @@ public class CalculateSales {
 			}
 
 			// 10桁未満なら格納
-			commoditySalesDateMap.put(commodityNumber, sumOFcommoditySales);
+			commoditySalesMap.put(commodityNumber, sumOFcommoditySales);
 		}
 
 
 		// ここまでRCDファイル読み込み処理
 
 		// 支店出力処理
-		if (!fileWright(args[0], "branch.out", branchDateMap, branchSalesDateMap)) {
+		if (!fileWright(args[0], "branch.out", branchNameMap, branchSalesMap)) {
 			System.out.println("予期せぬエラーが発生しました");
 			return;
 		}
 
 		// 商品出力処理
-		if (!fileWright(args[0], "commodity.out", commodityDateMap, commoditySalesDateMap)) {
+		if (!fileWright(args[0], "commodity.out", commodityNameMap, commoditySalesMap)) {
 			System.out.println("予期せぬエラーが発生しました");
 			return;
 		}
