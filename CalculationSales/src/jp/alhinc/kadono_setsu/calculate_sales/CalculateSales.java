@@ -68,7 +68,7 @@ public class CalculateSales {
 
 				// 検索ヒットしたファイルの格納
 				salesName.add(fileName);
-				}
+			}
 		}
 
 		// ここまでファイル検索処理
@@ -177,13 +177,13 @@ public class CalculateSales {
 				// ここまでRCDファイル読み込み処理
 
 				// 支店出力処理
-				if (!fileWright(args[0], "branch", branchDateMap, branchSalesDateMap,"branch.out")) {
+				if (!fileWright(args[0], "branch.out", branchDateMap, branchSalesDateMap)) {
 					System.out.println("予期せぬエラーが発生しました");
 					return;
 				}
 
 				// 商品出力処理
-				if (!fileWright(args[0], "commodity", commodityDateMap, commoditySalesDateMap,"commodity.out")) {
+				if (!fileWright(args[0], "commodity.out", commodityDateMap, commoditySalesDateMap)) {
 					System.out.println("予期せぬエラーが発生しました");
 					return;
 				}
@@ -234,7 +234,7 @@ public class CalculateSales {
 
 
 	public static boolean fileWright(String dirPath, String fileName, HashMap<String, String> nameMap,
-			HashMap<String, Long> salesMap ,String fileNameOutput) {
+			HashMap<String, Long> salesMap ) {
 
 		// ここからソート処理
 
@@ -248,23 +248,29 @@ public class CalculateSales {
 
 		// ここまでソート処理
 		String sep = System.getProperty("line.separator");
+		BufferedWriter bw = null;
 		// ここからファイル出力処理
 		try {
-			File file = new File(dirPath, fileNameOutput);
+			File file = new File(dirPath, fileName);
 			FileWriter fw = new FileWriter(file);
-			BufferedWriter bw = new BufferedWriter(fw);
+			bw = new BufferedWriter(fw);
 			for (Entry<String, Long> s : fileNameEntries) {
 				bw.write(s.getKey() + "," + nameMap.get(s.getKey()) + "," + s.getValue() + sep);
 				// 出力内容
 			}
 
-			bw.close();
+
 		} catch (FileNotFoundException e) {
 			return false;
 		} catch (IOException e) {
 			return false;
-			//				}finally{
-			//				bw.close();				
+		}finally{
+			try {
+				bw.close();
+			} catch (IOException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}				
 		}
 		return true;
 	}
