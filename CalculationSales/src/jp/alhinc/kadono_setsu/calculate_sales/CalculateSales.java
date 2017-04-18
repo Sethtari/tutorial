@@ -183,7 +183,7 @@ public class CalculateSales {
 				}
 
 				// 商品出力処理
-				if (!fileWright(args[0], "commodity", commodityDateMap, commoditySalesDateMap,"branch.out")) {
+				if (!fileWright(args[0], "commodity", commodityDateMap, commoditySalesDateMap,"commodity.out")) {
 					System.out.println("予期せぬエラーが発生しました");
 					return;
 				}
