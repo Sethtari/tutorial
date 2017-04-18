@@ -85,7 +85,6 @@ public class CalculateSales {
 				return;
 			}
 		}
-
 		// ここまで連番チェック処理
 
 		// ここからRCDファイル読み込み処理
@@ -112,8 +111,13 @@ public class CalculateSales {
 				}
 			}
 
+			if(salesOneTime.size() != 3 ){
+				System.out.println(salesName.get(i) + "のフォーマットが不正です");
+				return;
+			}
+			
 			if(!(salesOneTime.get(0)).matches("^[0-9]{3}$")
-					&& !(salesOneTime.get(1)).matches("^[0-9a-zA-Z]{8}$") && salesOneTime.size() != 3 ){
+					&& !(salesOneTime.get(1)).matches("^[0-9a-zA-Z]{8}$")){
 				System.out.println(salesName.get(i) + "のフォーマットが不正です");
 				return;
 			}
