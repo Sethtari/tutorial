@@ -25,26 +25,16 @@ public class CalculateSales {
 		BufferedReader br = null;
 		FileReader fr = null;
 
-		// 支店定義ファイルのマップ作成
+		// 支店・商品の定義・売り上げデータのマップ作成
 		HashMap<String, String> branchNameMap = new HashMap<String, String>();
-
-		// 店売り上げのマップ作成
 		HashMap<String, Long> branchSalesMap = new HashMap<String, Long>();
-
-
+		HashMap<String, String> commodityNameMap = new HashMap<String, String>();
+		HashMap<String, Long> commoditySalesMap = new HashMap<String, Long>();
 
 		// ファイル読み込み処理
 		if(!fileRead(args[0],"branch.lst","支店",branchNameMap,branchSalesMap,"^[0-9]{3}$")){
 			return;
 		}
-
-		// 商品定義マップ作成
-		HashMap<String, String> commodityNameMap = new HashMap<String, String>();
-
-		// 商品売り上げのマップ作成
-		HashMap<String, Long> commoditySalesMap = new HashMap<String, Long>();
-
-
 
 		// ファイル読み込み処理
 		if(!fileRead(args[0],"commodity.lst","商品",commodityNameMap,commoditySalesMap,"^[0-9a-zA-Z]{8}")){
@@ -61,18 +51,12 @@ public class CalculateSales {
 			File file = files[i];
 			String fileName = file.getName();
 			if (file.isFile() && fileName.matches("^[0-9]{8}.rcd$")) {
-
 				// 検索ヒットしたファイルの格納
 				salesName.add(fileName);
-				
 			}
 		}
 
-		// ここまでファイル検索処理
-
 		// ここから連番チェック処理
-		
-		
 		for (int i = 0; i < salesName.size(); i++) {
 			String str = salesName.get(i);
 			String[] salesNameCheck = str.split("[.]");
@@ -83,7 +67,6 @@ public class CalculateSales {
 				return;
 			}
 		}
-		// ここまで連番チェック処理
 
 		// ここからrcdファイル読み込み処理
 		for (int i = 0; i < salesName.size(); i++) {
@@ -113,7 +96,7 @@ public class CalculateSales {
 				System.out.println(salesName.get(i) + "のフォーマットが不正です");
 				return;
 			}
-			
+
 
 			if(!salesOneTime.get(2).matches("^[0-9]*$")){
 				System.out.println("予期せぬエラーが発生しました");
@@ -125,17 +108,23 @@ public class CalculateSales {
 				return;
 			}
 
-
-
-			// ここから読み込んだデータの格納処理。まずは支店データ
+			// 支店コード確認
 			String branchNumber = salesOneTime.get(0);
-			if (!(branchSalesMap.containsKey(salesOneTime.get(0)))) {
+			if (!(branchSalesMap.containsKey(branchNumber))) {
 				// 支店コードがリストになければエラー
 				System.out.println(salesName.get(i) + "の支店コードが不正です");
 				return;
 			}
 
-			// 支店データが存在する場合、合計して代入
+			// 商品コード確認
+			String commodityNumber = salesOneTime.get(1);
+			if (!commoditySalesMap.containsKey(commodityNumber)) {
+				// 商品コードがリストになければエラー
+				System.out.println(salesName.get(i) + "の商品コードが不正です");
+				return;
+			}
+
+			// 支店データ合計代入
 			long sumOfBranchSales = branchSalesMap.get(branchNumber)
 					+ salesFileMoney;
 
@@ -148,15 +137,7 @@ public class CalculateSales {
 			// 10桁未満なら格納
 			branchSalesMap.put(branchNumber, sumOfBranchSales);
 
-
-			// ここから商品データと売り上げの格納
-			String commodityNumber = salesOneTime.get(1);
-			if (!commoditySalesMap.containsKey(salesOneTime.get(1))) {
-				// 商品コードがリストになければエラー
-				System.out.println(salesName.get(i) + "の商品コードが不正です");
-				return;
-			}
-			// 商品データが存在する場合、合計して代入
+			// 商品データ合計代入
 			long sumOFcommoditySales = commoditySalesMap.get(commodityNumber)
 					+ salesFileMoney;
 
@@ -169,9 +150,6 @@ public class CalculateSales {
 			// 10桁未満なら格納
 			commoditySalesMap.put(commodityNumber, sumOFcommoditySales);
 		}
-
-
-		// ここまでRCDファイル読み込み処理
 
 		// 支店出力処理
 		if (!fileWright(args[0], "branch.out", branchNameMap, branchSalesMap)) {
@@ -223,8 +201,6 @@ public class CalculateSales {
 				return false;
 			}
 		}
-
-
 		// 定義ファイル読み込み終了
 		return true;
 	}
@@ -267,7 +243,6 @@ public class CalculateSales {
 			} catch (IOException e) {
 				// TODO 自動生成された catch ブロック
 				return false;
-
 			}
 		}
 		return true;
