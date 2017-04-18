@@ -74,6 +74,7 @@ public class CalculateSales {
 		// ここまでファイル検索処理
 
 		// ここから連番チェック処理
+
 		for (int i = 0; i < salesName.size(); i++) {
 			String str = salesName.get(i);
 			String[] salesNameCheck = str.split("[.]");
@@ -107,89 +108,87 @@ public class CalculateSales {
 				try {
 					br.close();
 				} catch (IOException e) {
-
+					return;
 				}
 			}
-			if(salesOneTime.size() != 3 ){
+
+			if(!(salesOneTime.get(0)).matches("^[0-9]{3}$")
+					&& !(salesOneTime.get(1)).matches("^[0-9a-zA-Z]{8}$") && salesOneTime.size() != 3 ){
 				System.out.println(salesName.get(i) + "のフォーマットが不正です");
 				return;
-			}else{
-				if(!salesOneTime.get(2).matches("^[0-9]*$")){
-					System.out.println("予期せぬエラーが発生しました");
-					return;
-				}
-
-				if ((salesOneTime.get(0)).matches("^[0-9]{3}$")
-						&& (salesOneTime.get(1)).matches("^[0-9a-zA-Z]{8}$")
-						&& Long.parseLong(salesOneTime.get(2)) <= 10000000000L) {
-
-					// ここから読み込んだデータの格納処理。まずは支店データ
-					String branchNumber = salesOneTime.get(0);
-					if (branchDateMap.get(branchNumber) == null) {
-						// 支店コードがリストになければエラー
-						System.out.println(salesName.get(i) + "の支店コードが不正です");
-
-						return;
-					} else {
-						// 支店データが存在する場合、合計して代入
-						long sumOfBranchSales = branchSalesDateMap.get(branchNumber)
-								+ Long.parseLong(salesOneTime.get(2));
-
-						// 合計金額が10桁を超えたらエラー
-						if (sumOfBranchSales >= 10000000000L) {
-							System.out.println("合計金額が10桁を超えました");
-							return;
-						}
-
-						// 10桁未満なら格納
-						branchSalesDateMap.put(branchNumber, sumOfBranchSales);
-					}
-
-					// ここから商品データと売り上げの格納
-					String commodityNumber = salesOneTime.get(1);
-					if (commodityDateMap.get(commodityNumber) == null) {
-						// 商品コードがリストになければエラー
-						System.out.println(salesName.get(i) + "の商品コードが不正です");
-						return;
-					} else {
-
-						// 商品データが存在する場合、合計して代入
-						long sumOFcommoditySales = commoditySalesDateMap.get(commodityNumber)
-								+ Long.parseLong(salesOneTime.get(2));
-
-						// 合計金額が10桁を超えたらエラー
-						if (sumOFcommoditySales >= 10000000000L) {
-							System.out.println("合計金額が10桁を超えました");
-							return;
-						}
-
-						// 10桁未満なら格納
-						commoditySalesDateMap.put(commodityNumber, sumOFcommoditySales);
-					}
-
-				} else {
-					System.out.println(salesName.get(i) + "のフォーマットが不正です");
-
-					return;
-				}
-
-
-				// ここまでRCDファイル読み込み処理
-
-				// 支店出力処理
-				if (!fileWright(args[0], "branch.out", branchDateMap, branchSalesDateMap)) {
-					System.out.println("予期せぬエラーが発生しました");
-					return;
-				}
-
-				// 商品出力処理
-				if (!fileWright(args[0], "commodity.out", commodityDateMap, commoditySalesDateMap)) {
-					System.out.println("予期せぬエラーが発生しました");
-					return;
-				}
 			}
+
+			if(!salesOneTime.get(2).matches("^[0-9]*$")){
+				System.out.println("予期せぬエラーが発生しました");
+				return;
+			}
+			Long salesFileMoney = Long.parseLong(salesOneTime.get(2));
+			if (salesFileMoney >= 10000000000L) {
+				System.out.println(salesName.get(i) + "のフォーマットが不正です");
+				return;
+			}
+
+
+
+			// ここから読み込んだデータの格納処理。まずは支店データ
+			String branchNumber = salesOneTime.get(0);
+			if (branchDateMap.get(branchNumber) == null) {
+				// 支店コードがリストになければエラー
+				System.out.println(salesName.get(i) + "の支店コードが不正です");
+				return;
+			}
+
+			// 支店データが存在する場合、合計して代入
+			long sumOfBranchSales = branchSalesDateMap.get(branchNumber)
+					+ salesFileMoney;
+
+			// 合計金額が10桁を超えたらエラー
+			if (sumOfBranchSales >= 10000000000L) {
+				System.out.println("合計金額が10桁を超えました");
+				return;
+			}
+
+			// 10桁未満なら格納
+			branchSalesDateMap.put(branchNumber, sumOfBranchSales);
+
+
+			// ここから商品データと売り上げの格納
+			String commodityNumber = salesOneTime.get(1);
+			if (commodityDateMap.get(commodityNumber) == null) {
+				// 商品コードがリストになければエラー
+				System.out.println(salesName.get(i) + "の商品コードが不正です");
+				return;
+			}
+			// 商品データが存在する場合、合計して代入
+			long sumOFcommoditySales = commoditySalesDateMap.get(commodityNumber)
+					+ salesFileMoney;
+
+			// 合計金額が10桁を超えたらエラー
+			if (sumOFcommoditySales >= 10000000000L) {
+				System.out.println("合計金額が10桁を超えました");
+				return;
+			}
+
+			// 10桁未満なら格納
+			commoditySalesDateMap.put(commodityNumber, sumOFcommoditySales);
+		}
+
+
+		// ここまでRCDファイル読み込み処理
+
+		// 支店出力処理
+		if (!fileWright(args[0], "branch.out", branchDateMap, branchSalesDateMap)) {
+			System.out.println("予期せぬエラーが発生しました");
+			return;
+		}
+
+		// 商品出力処理
+		if (!fileWright(args[0], "commodity.out", commodityDateMap, commoditySalesDateMap)) {
+			System.out.println("予期せぬエラーが発生しました");
+			return;
 		}
 	}
+
 
 	public static boolean fileRead(String dirPath,String fileName, String fileType,
 			HashMap<String,String> nameMap,HashMap<String,Long> salesMap,String nameLimit){
@@ -200,32 +199,34 @@ public class CalculateSales {
 		if(file.exists() == false){
 			System.out.println(fileType +"定義ファイルが存在しません");
 			return false;
-		}else{
-			try {
+		}
+		try {
 
-				FileReader fr = new FileReader(file);
-				br = new BufferedReader(fr);
+			FileReader fr = new FileReader(file);
+			br = new BufferedReader(fr);
 
-				String s = null;
-				while((s = br.readLine()) != null){
-					String[] dateSplit = s.split(",");
-					if (dateSplit.length == 2 && dateSplit[0].matches(nameLimit)) {
-						nameMap.put(dateSplit[0], dateSplit[1]);
-						salesMap.put(dateSplit[0], 0l);
-					} else {
-						System.out.println(fileType + "定義ファイルのフォーマットが不正です");
-						return false;
-					}
-				}
-				return true;
-			}catch(IOException e){
-			}finally{
-				try {
-					br.close();
-				} catch (IOException e) {
+			String s = null;
+			while((s = br.readLine()) != null){
+				String[] dateSplit = s.split(",");
+				if (dateSplit.length == 2 && dateSplit[0].matches(nameLimit)) {
+					nameMap.put(dateSplit[0], dateSplit[1]);
+					salesMap.put(dateSplit[0], 0l);
+				} else {
+					System.out.println(fileType + "定義ファイルのフォーマットが不正です");
+					return false;
 				}
 			}
+		}catch(IOException e){
+			System.out.println("予期せぬエラーが発生しました");
+			return false;
+		}finally{
+			try {
+				br.close();
+			} catch (IOException e) {
+				return false;
+			}
 		}
+
 
 		// 定義ファイル読み込み終了
 		return true;
@@ -258,19 +259,19 @@ public class CalculateSales {
 				bw.write(s.getKey() + "," + nameMap.get(s.getKey()) + "," + s.getValue() + sep);
 				// 出力内容
 			}
-
-
 		} catch (FileNotFoundException e) {
 			return false;
 		} catch (IOException e) {
 			return false;
 		}finally{
 			try {
-				bw.close();
+				if(bw != null)
+					bw.close();
 			} catch (IOException e) {
 				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-			}				
+				return false;
+
+			}
 		}
 		return true;
 	}
